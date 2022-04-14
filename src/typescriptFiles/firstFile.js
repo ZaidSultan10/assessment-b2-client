@@ -15,8 +15,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
+var websocket_1 = require("websocket");
 var message = 'Hello World';
 console.log(message);
+var socket = new websocket_1.w3cwebsocket('ws://localhost:5000');
+socket.onopen = function () {
+    console.log('WebSocket Client Connected');
+};
+socket.onmessage = function (message) {
+    var parsedBeat = JSON.parse(message.data);
+    console.log('my messgaeg', parsedBeat.type);
+};
 var CustomWebSocketClient = /** @class */ (function () {
     function CustomWebSocketClient(name) {
         this.name = name;
