@@ -2,6 +2,7 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 
 let message: string = 'Hello World';
 console.log(message);
+let parsedString: string
 
 const socket = new W3CWebSocket ('ws://localhost:5000');
 
@@ -11,7 +12,9 @@ socket.onopen = () => {
 
   socket.onmessage = (message) => {
     let parsedBeat = JSON.parse(message.data)
-    console.log('my messgaeg',parsedBeat.type);
+    console.log('my parsedBeat >>> ',parsedBeat );
+    parsedString = parsedBeat.type
+    console.log('my messgaeg >>> ',parsedString );
   };
 
 abstract class CustomWebSocketClient {
@@ -28,13 +31,20 @@ class SomeClass extends CustomWebSocketClient{
     }
 
     subscribe(): void {
+        socket.send(JSON.stringify({type:"Subscribe"}))
         console.log("i am subscribed");
       }
-      unsubscribe(): void {
+    unsubscribe(): void {
+        socket.send(JSON.stringify({type:"Unsubscribe"}))
         console.log("i am not subscirbed");
       }
 }
 
 const d = new SomeClass();
-d.subscribe();
-d.unsubscribe();
+if(parsedString !== ''){
+    setTimeout(()=>{
+        d.unsubscribe();
+    },2000)
+}
+// d.subscribe();
+// d.unsubscribe();

@@ -18,13 +18,16 @@ exports.__esModule = true;
 var websocket_1 = require("websocket");
 var message = 'Hello World';
 console.log(message);
+var parsedString;
 var socket = new websocket_1.w3cwebsocket('ws://localhost:5000');
 socket.onopen = function () {
     console.log('WebSocket Client Connected');
 };
 socket.onmessage = function (message) {
     var parsedBeat = JSON.parse(message.data);
-    console.log('my messgaeg', parsedBeat.type);
+    console.log('my parsedBeat >>> ', parsedBeat);
+    parsedString = parsedBeat.type;
+    console.log('my messgaeg >>> ', parsedString);
 };
 var CustomWebSocketClient = /** @class */ (function () {
     function CustomWebSocketClient(name) {
@@ -38,13 +41,20 @@ var SomeClass = /** @class */ (function (_super) {
         return _super.call(this, "welcome to my youtube channel") || this;
     }
     SomeClass.prototype.subscribe = function () {
+        socket.send(JSON.stringify({ type: "Subscribe" }));
         console.log("i am subscribed");
     };
     SomeClass.prototype.unsubscribe = function () {
+        socket.send(JSON.stringify({ type: "Unsubscribe" }));
         console.log("i am not subscirbed");
     };
     return SomeClass;
 }(CustomWebSocketClient));
 var d = new SomeClass();
-d.subscribe();
-d.unsubscribe();
+if (parsedString !== '') {
+    setTimeout(function () {
+        d.unsubscribe();
+    }, 2000);
+}
+// d.subscribe();
+// d.unsubscribe();
